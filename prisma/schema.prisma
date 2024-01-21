@@ -10,6 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id               Int       @id @default(autoincrement())
+  name             String
+  phone            String
+  email            String    @unique
+  password         String
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  user_type        UserType
+  homes            Home[]
+  buyer_messages   Message[] @relation("buyer_messages")
+  realtor_messages Message[] @relation("realtor_messages")
+}
+
 model Home {
   id                  Int          @id @default(autoincrement())
   address             String
@@ -20,37 +34,21 @@ model Home {
   price               Float
   land_size           Float
   propertyType        PropertyType
+  created_at          DateTime     @default(now())
+  updated_at          DateTime     @updatedAt
   images              Image[]
   realtor_id          Int
   realtor             User         @relation(fields: [realtor_id], references: [id])
   messages            Message[]
-  created_at          DateTime     @default(now())
-  updated_at          DateTime     @updatedAt
-  messageId           Int
 }
 
 model Image {
   id         Int      @id @default(autoincrement())
   url        String
-  home_id    Int
-  home       Home     @relation(fields: [home_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  homeId     Int
-}
-
-model User {
-  id               Int       @id @default(autoincrement())
-  name             String
-  phone            String
-  email            String    @unique
-  password         String
-  user_type        UserType
-  homes            Home[]
-  buyer_messages   Message[] @relation("buyer_messages")
-  realtor_messages Message[] @relation("realtor_messages")
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
+  home_id    Int
+  home       Home     @relation(fields: [home_id], references: [id])
 }
 
 model Message {
